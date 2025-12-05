@@ -1,0 +1,84 @@
+<div id="register-div">
+  <div id="img-div">
+    <img src="/flotrack-logo.png" alt="logo" />
+  </div>
+  <form id="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="email">
+        Email
+      </label>
+      <input type="email" placeholder="Email" formControlName="email" required />
+      @if (emailControl?.touched && emailControl?.invalid) {
+      @if (emailControl?.errors?.['required']) {
+      <small class="error-message">Email is required.</small>
+      }
+      @else if (emailControl?.errors?.['email']){
+      <small class="error-message">Invalid email format.</small>
+      }
+      }
+    </div>
+
+    <div>
+      <label for="username">
+        Username
+      </label>
+      <input type="text" placeholder="Username" formControlName="username" required />
+      @if (usernameControl?.touched && usernameControl?.invalid) {
+      @if (usernameControl?.errors?.['required']) {
+      <small class="error-message">Username is required.</small>
+      }
+      @else if (usernameControl?.errors?.['minlength']){
+      <small class="error-message">Username must be at least 3 characters long.</small>
+      }
+      @else if (usernameControl?.errors?.['maxlength']){
+      <small class="error-message">Username cannot exceed 20 characters.</small>
+      }
+      }
+    </div>
+
+    <div>
+      <label for="password">
+        Password
+      </label>
+      <input type="password" placeholder="Password" formControlName="password" required />
+      @if (passwordControl?.touched && passwordControl?.invalid) {
+      @if (passwordControl?.errors?.['required']) {
+      <small class="error-message">Password is required.</small>
+      }
+      @else if (passwordControl?.errors?.['minlength']){
+      <small class="error-message">Password must be at least 6 characters long.</small>
+      }
+      }
+    </div>
+
+    <div>
+      <label for="confirmPassword">
+        Confirm Password
+      </label>
+      <input type="password" placeholder="Confirm Password" formControlName="confirmPassword" required />
+
+      @if (confirmPasswordControl?.touched && confirmPasswordControl?.invalid) {
+      @if (confirmPasswordControl?.errors?.['required']) {
+      <small class="error-message">Password is required.</small>
+      }
+      @else if (confirmPasswordControl?.errors?.['minlength']){
+      <small class="error-message">Password must be at least 6 characters long.</small>
+      }
+      }
+    </div>
+
+
+    <div id="register-button">
+      <button type="submit" [disabled]="registerForm.invalid">Register</button>
+      @if (registerError) {
+      <small class="error-message">{{ registerError }}</small>
+      }
+    </div>
+
+    <div id="link-div">
+      <a routerLink="/login" href="/login">
+        Already have an account? Log in
+      </a>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,49 @@
+<div id="login-div">
+  <div id="img-div">
+    <img src="/flotrack-logo.png" alt="logo" />
+  </div>
+
+  <form id="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="email">
+        Email
+      </label>
+      <input type="email" placeholder="Email" formControlName="email" required />
+      @if (emailControl?.touched && emailControl?.invalid) {
+      @if (emailControl?.errors?.['required']) {
+      <small class="error-message">Email is required.</small>
+      }
+      @else if (emailControl?.errors?.['email']){
+      <small class="error-message">Invalid email format.</small>
+      }
+      }
+    </div>
+
+    <div>
+      <label for="password">
+        Password
+      </label>
+      <input type="password" placeholder="Password" formControlName="password" required />
+      @if (passwordControl?.touched && passwordControl?.invalid) {
+      @if (passwordControl?.errors?.['required']) {
+      <small class="error-message">Password is required.</small>
+      }
+      @else if (passwordControl?.errors?.['minlength']){
+      <small class="error-message">Password must be at least 6 characters long.</small>
+      }
+      }
+    </div>
+    <div id="login-button">
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </div>
+    @if (loginError) {
+      <small class="error-message">{{ loginError }}</small>
+    }
+
+    <div id="link-div">
+      <a routerLink="/register" href="/register">
+        Don't have an account? Register
+      </a>
+    </div>
+  </form>
+</div>

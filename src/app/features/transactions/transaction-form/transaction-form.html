@@ -1,0 +1,51 @@
+<div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="transactionForm">
+    <div>
+      <label for="category">Category:</label>
+      <input id="categoryTypeExpense" type="radio" formControlName="isExpense" value="true" checked
+        (change)="updateCategoryOptions()" />
+      <label for="categoryTypeExpense">Expense</label>
+      <input id="categoryTypeIncome" type="radio" formControlName="isExpense" value="false"
+        (change)="updateCategoryOptions()" />
+      <label for="categoryTypeIncome">Income</label>
+      <select id="category" formControlName="categoryId" required="true">
+        <option *ngFor="let category of categoryOptions" [value]="category.id">{{ category.name }}</option>
+      </select>
+      @if (transactionForm.get('categoryId')?.errors?.['required']) {
+      <small class="error-message">Category is required.</small>
+      }
+    </div>
+
+    <div>
+      <label for="amount">Amount:</label>
+      <input id="amount" type="number" formControlName="amount" required="true" min="0.00" step="0.01" placeholder="0.00" pattern="^\d+(?:\.\d{1,2})" /> €
+      @if (transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid) {
+      @if (transactionForm.get('amount')?.errors?.['required']) {
+      <small class="error-message">Amount is required.</small>
+      }
+      @else if (transactionForm.get('amount')?.errors?.['min']) {
+      <small class="error-message">Amount must be greater than 0.</small>
+      }
+      @else if (transactionForm.get('amount')?.errors?.['pattern']) {
+      <small class="error-message">Amount must be a valid number.</small>
+      }
+      }
+    </div>
+
+    <div>
+      <label for="date">Date:</label>
+      <input id="date" type="date" formControlName="date" />
+    </div>
+
+    <div>
+      <label for="description">Description:</label>
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+
+    <button (click)="hideForm()">Cancel</button>
+    <button type="submit">{{ isEdit ? 'Update' : 'Add' }} Transaction</button>
+    @if (transactionError) {
+    <div class="error-message">{{ transactionError }}</div>
+    }
+  </form>
+</div>

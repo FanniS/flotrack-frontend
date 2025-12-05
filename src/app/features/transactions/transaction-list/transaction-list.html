@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="header">
+    <h1>Transactions</h1>
+    <button (click)="showAddOrEditPopup(null, false)">Add Transaction</button>
+    <button>Export to Excel</button>
+  </div>
+  <section class="wrapper">
+    <!-- Row title -->
+    <main class="row title">
+      <ul>
+        <li>Category</li>
+        <li>Amount</li>
+        <li>Expense</li>
+        <li>Date</li>
+        <li>Actions</li>
+      </ul>
+    </main>
+
+    @for (transaction of transactions; track transaction.id) {
+    <!-- Row -->
+    <article class="row transaction">
+      <ul>
+        <li>{{ transaction.categoryName }}</li>
+        <li>{{ transaction.amount }} €</li>
+        <li>{{ transaction.isExpense }}</li>
+        <li>{{ transaction.date }}</li>
+        <li><button (click)="showAddOrEditPopup(transaction, true)">Edit</button><button>Delete</button></li>
+      </ul>
+      <ul class="more-content">
+        <li>{{ transaction.description }}</li>
+      </ul>
+    </article>
+    }
+    @empty {
+    <tr>There are no items.</tr>
+    }
+
+    <div class="paginator-div">
+      <mat-paginator class="paginator" [length]="totalTransactions" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page" (page)="getPaginatorData($event.pageIndex, $event.pageSize)">
+      </mat-paginator>
+    </div>
+  </section>
