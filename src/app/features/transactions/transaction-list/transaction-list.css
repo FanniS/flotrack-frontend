@@ -144,4 +144,24 @@ ul.more-content li {
   }
 }
 
+/* buttons */
+button {
+  margin: 1px;
+  top: 15px;
+  right: 15px;
+  background-color: #85bb65;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button {
+  background-color: #497132;
+}
+
+
 

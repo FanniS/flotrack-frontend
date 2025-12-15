@@ -32,7 +32,7 @@ export class TransactionsComponent {
 
   openAddDialog() {
     const dialogRef = this.dialog.open(TransactionForm, {
-      width: '500px',
+      width: '600px',
       data: {
         isEdit: false
       }
@@ -47,7 +47,7 @@ export class TransactionsComponent {
 
   openEditDialog(transaction: TransactionResponse) {
     const dialogRef = this.dialog.open(TransactionForm, {
-      width: '500px',
+      width: '600px',
       data: {
         isEdit: true,
         selectedTransaction: transaction
