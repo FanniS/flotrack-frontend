@@ -6,7 +6,6 @@ import { IncomeCategory } from '../../../shared/models/categories/income-categor
 import { ExpenseCategory } from '../../../shared/models/categories/expense-category/expense-category';
 import { EventEmitter } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
 @Component({
   selector: 'app-transaction-list',
   imports: [MatPaginatorModule],
@@ -14,19 +13,17 @@ import { EventEmitter } from '@angular/core';
   styleUrl: './transaction-list.css',
 })
 export class TransactionList {
-  @Input() isEdit : boolean = false;
-
   transactions: TransactionResponse[] = [];
-  selectedTransaction: TransactionResponse | null = null;
   loading: boolean = false;
   incomeCategories: IncomeCategory[] = [];
   expenseCategories: ExpenseCategory[] = [];
 
+  @Output() addTransaction = new EventEmitter<void>();
+  @Output() editTransaction = new EventEmitter<TransactionResponse>();
+
   page: number;
   size: number;
   totalTransactions: number;
-
-  @Output() isFormVisible = new EventEmitter<boolean>();
 
   constructor(
     private transactionService: TransactionService
@@ -65,14 +62,11 @@ export class TransactionList {
     }
     );
   }
-
-  showAddOrEditPopup(transaction: TransactionResponse | null, isEdit : boolean) {
-    this.selectedTransaction = transaction;
-    this.isEdit = isEdit;
-    this.isFormVisible.emit(true);
+  onAddClick() {
+    this.addTransaction.emit();
   }
 
-  setSelectedTransaction(transaction: TransactionResponse) {
-    this.selectedTransaction = transaction;
+  onEditClick(transaction: TransactionResponse) {
+    this.editTransaction.emit(transaction);
   }
 }

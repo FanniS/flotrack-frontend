@@ -1,5 +1,5 @@
-<app-transaction-list (isFormVisible)="onShowForm($event)" [isEdit]="isEdit"></app-transaction-list>
-@if (this.isFormVisible) {
-  <app-transaction-form (isFormVisible)="onShowForm($event)" [selectedTransaction]="selectedTransaction" [isEdit]="isEdit"></app-transaction-form>
-}
+<app-transaction-list
+  (addTransaction)="openAddDialog()"
+  (editTransaction)="openEditDialog($event)">
+</app-transaction-list>
 <button type="button" (click)="logout()">Logout</button>

@@ -1,40 +1,53 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CategoryService } from '../../../core/transaction/services/category-service';
 import { TransactionResponse } from '../../../shared/models/transactions/transaction-response/transaction-response';
 import { IncomeCategory } from '../../../shared/models/categories/income-category/income-category';
 import { ExpenseCategory } from '../../../shared/models/categories/expense-category/expense-category';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { TransactionService } from '../../../core/transaction/services/transaction-service';
-import e from 'express';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { CommonModule } from '@angular/common';
+
+export interface TransactionDialogData {
+  selectedTransaction?: TransactionResponse | null;
+  isEdit: boolean;
+}
 
 @Component({
   selector: 'app-transaction-form',
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule],
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.css'
 })
-export class TransactionForm {
-  @Input() selectedTransaction: TransactionResponse | null = null;
-  @Input() isEdit : boolean = false;
 
+export class TransactionForm {
   transactionForm: FormGroup;
   loading: boolean = false;
   incomeCategories: IncomeCategory[] = [];
   expenseCategories: ExpenseCategory[] = [];
   categoryOptions: IncomeCategory[] | ExpenseCategory[] = [];
-  transactionError : string | null = null;
+  transactionError: string | null = null;
+  isEdit: boolean = false;
 
-  @Output() isFormVisible = new EventEmitter<boolean>();
-
-  constructor(private categoryService: CategoryService, private transactionService: TransactionService) {
+  constructor(
+    private categoryService: CategoryService,
+    private transactionService: TransactionService,
+    private dialogRef: MatDialogRef<TransactionForm>,
+    @Inject(MAT_DIALOG_DATA) public data: TransactionDialogData
+  ) {
     this.transactionForm = new FormGroup({
       isExpense: new FormControl(true),
       categoryId: new FormControl('', [Validators.required]),
-      categoryOptions: new FormControl<IncomeCategory[] | ExpenseCategory[]>([]),
-      amount: new FormControl(0, [Validators.required, Validators.min(0.01), Validators.pattern("^[0-9]+(\\.[0-9]{1,2})?")]),
+      amount: new FormControl(0, [
+        Validators.required,
+        Validators.min(0.01)
+      ]),
       date: new FormControl(new Date()),
       description: new FormControl('')
-    })
+    });
+
+    this.isEdit = data.isEdit;
   }
 
   get isExpenseControl() {
@@ -49,53 +62,68 @@ export class TransactionForm {
     return this.transactionForm.get('amount');
   }
 
-  onNgInit(){
+  ngOnInit() {
     this.loadCategories();
+
+    this.transactionForm.get('isExpense')?.valueChanges.subscribe(value => {
+      this.updateCategoryOptions(value);
+    });
+
+    if (this.data.selectedTransaction) {
+      const t = this.data.selectedTransaction;
+
+      this.transactionForm.patchValue({
+        isExpense: t.isExpense,
+        amount: t.amount,
+        date: t.date,
+        description: t.description
+      });
+
+      setTimeout(() => {
+        const categoryId = this.findCategoryIdByName(t.categoryName);
+        if (categoryId) {
+          this.transactionForm.patchValue({ categoryId });
+        }
+      });
+    }
   }
 
-  hideForm() {
-    this.transactionForm.reset();
-    this.isFormVisible.emit(false);
+  cancel() {
+    this.dialogRef.close();
   }
+
   // START: Populate and handle categories
 
   loadCategories() {
-    this.loadIncomeCategories();
-    this.loadExpenseCategories();
-  }
-
-  loadIncomeCategories() {
     this.loading = true;
-    this.categoryService.getIncomeCategories().subscribe({
-      next: categoryData => {
-        this.incomeCategories = categoryData;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        console.error("Error while loading income categories!")
+    forkJoin([
+      this.categoryService.getIncomeCategories(),
+      this.categoryService.getExpenseCategories()
+    ]).subscribe(([income, expense]) => {
+      this.incomeCategories = income;
+      this.expenseCategories = expense;
+
+      this.updateCategoryOptions(this.transactionForm.get('isExpense')?.value);
+
+      if (this.data.selectedTransaction) {
+        const id = this.findCategoryIdByName(this.data.selectedTransaction.categoryName);
+        this.transactionForm.patchValue({ categoryId: id });
       }
     });
   }
 
-  loadExpenseCategories() {
-    this.loading = true;
-    this.categoryService.getExpenseCategories().subscribe({
-      next: categoryData => {
-        this.expenseCategories = categoryData;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        console.error("Error while loading expense categories!")
-      }
-    });
+  updateCategoryOptions(isExpense: boolean) {
+    this.categoryOptions = isExpense
+      ? this.expenseCategories
+      : this.incomeCategories;
+
+    this.transactionForm.get('categoryId')?.reset();
   }
 
-  updateCategoryOptions() {
-    const isExpense = this.transactionForm.get('isExpense')?.value;
-    this.categoryOptions = isExpense ? this.expenseCategories : this.incomeCategories;
-
+  private findCategoryIdByName(name: string): number | null {
+    const allCategories = [...this.incomeCategories, ...this.expenseCategories];
+    const found = allCategories.find(c => c.name === name);
+    return found ? found.id : null;
   }
 
   onSubmit() {
@@ -109,17 +137,30 @@ export class TransactionForm {
         date: date,
         description: description
       };
-      this.transactionService.addTransaction(transactionRequest).subscribe({
-        next: (response) => {
-          this.transactionForm.reset();
-          console.log('Transaction successful', response);
-          this.isFormVisible.emit(false);
-          window.location.reload();
-        },
-        error: (error) => {
-          this.transactionError = error?.error?.message || 'Transaction failed. Please try again.';
-        }
-      });
+      if (this.isEdit && this.data.selectedTransaction) {
+        this.transactionService.updateTransaction(this.data.selectedTransaction.id, transactionRequest).subscribe({
+          next: (response) => {
+            this.transactionForm.reset();
+            this.dialogRef.close(response);
+            console.log('Transaction update successful', response);
+          },
+          error: (error) => {
+            this.transactionError = error?.error?.message || 'Transaction failed. Please try again.';
+          }
+        });
+      }
+      else {
+        this.transactionService.addTransaction(transactionRequest).subscribe({
+          next: (response) => {
+            this.transactionForm.reset();
+            this.dialogRef.close(response);
+            console.log('Transaction addition successful', response);
+          },
+          error: (error) => {
+            this.transactionError = error?.error?.message || 'Transaction failed. Please try again.';
+          }
+        });
+      }
     }
     else {
       this.transactionError = 'Please fill out all required fields correctly.';
