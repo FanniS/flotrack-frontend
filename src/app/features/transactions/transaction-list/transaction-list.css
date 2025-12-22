@@ -71,7 +71,7 @@ mat-paginator{
 .row:hover {
   background-color: #A5CD8E;
   color: #f9f9f9;
-  height: 65px;
+  height: 80px;
 }
 @media only screen and (max-width: 767px) {
   .row:hover {

@@ -1,0 +1,19 @@
+<div class="form-container">
+  <h2 id="headerText">Delete Transaction</h2>
+  <form class="form-container" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <p>Are you sure you want to delete the transaction?</p>
+      <p><strong>Category:</strong> {{ data.selectedTransaction?.categoryName }}</p>
+      <p><strong>Description:</strong>{{ data.selectedTransaction?.description == null? "" : data.selectedTransaction?.description }}</p>
+    </div>
+
+    <div class="button-group">
+      <button type="button" id="cancel-button" (click)="cancel()">Cancel</button>
+      <button type="submit">Delete Transaction</button>
+      @if (transactionError) {
+      <div class="error-message">{{ transactionError }}</div>
+      }
+    </div>
+
+  </form>
+</div>

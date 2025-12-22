@@ -24,7 +24,7 @@
         <li>{{ transaction.amount }} €</li>
         <li>{{ transaction.isExpense }}</li>
         <li>{{ transaction.date }}</li>
-        <li><button (click)="onEditClick(transaction)">Edit</button><button class="delete-button">Delete</button></li>
+        <li><button (click)="onEditClick(transaction)">Edit</button><button (click)="onDeleteClick(transaction)" class="delete-button">Delete</button></li>
       </ul>
       <ul class="more-content">
         <li>{{ transaction.description }}</li>

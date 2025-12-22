@@ -126,6 +126,8 @@ export class TransactionForm {
     return found ? found.id : null;
   }
 
+  // END: Populate and handle categories
+
   onSubmit() {
     this.transactionError = null;
     if (this.transactionForm.valid) {
@@ -166,5 +168,5 @@ export class TransactionForm {
       this.transactionError = 'Please fill out all required fields correctly.';
     }
   }
-  // END: Populate and handle categories
+
 }

@@ -5,6 +5,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { IncomeCategory } from '../../../shared/models/categories/income-category/income-category';
 import { ExpenseCategory } from '../../../shared/models/categories/expense-category/expense-category';
 import { EventEmitter } from '@angular/core';
+import { TransactionRefreshService } from '../../../core/transaction/services/transaction-refresh';
 
 @Component({
   selector: 'app-transaction-list',
@@ -20,13 +21,15 @@ export class TransactionList {
 
   @Output() addTransaction = new EventEmitter<void>();
   @Output() editTransaction = new EventEmitter<TransactionResponse>();
+  @Output() deleteTransaction = new EventEmitter<TransactionResponse>();
 
   page: number;
   size: number;
   totalTransactions: number;
 
   constructor(
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private transactionRefreshService: TransactionRefreshService
   ) {
     this.page = 0;
     this.size = 10;
@@ -34,9 +37,13 @@ export class TransactionList {
     this.loadTransactions(this.page, this.size);
   }
 
-  /*onNgInit() {
+  ngOnInit() {
     this.loadTransactions(this.page, this.size);
-  }*/
+
+    this.transactionRefreshService.refresh$.subscribe(() => {
+      this.loadTransactions(this.page, this.size);
+    });
+  }
 
   /*
   *  Get data for the paginator and also to the table
@@ -68,5 +75,9 @@ export class TransactionList {
 
   onEditClick(transaction: TransactionResponse) {
     this.editTransaction.emit(transaction);
+  }
+
+  onDeleteClick(transaction: TransactionResponse) {
+    this.deleteTransaction.emit(transaction);
   }
 }

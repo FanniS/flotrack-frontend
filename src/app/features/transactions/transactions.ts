@@ -6,6 +6,8 @@ import { TransactionForm } from "./transaction-form/transaction-form";
 import { FormsModule } from '@angular/forms';
 import { TransactionResponse } from '../../shared/models/transactions/transaction-response/transaction-response';
 import { MatDialog } from '@angular/material/dialog';
+import { TransactionRefreshService } from '../../core/transaction/services/transaction-refresh';
+import { TransactionDeleteForm } from './transaction-delete-form/transaction-delete-form';
 
 @Component({
   selector: 'app-transactions',
@@ -22,7 +24,8 @@ export class TransactionsComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private transctionRefreshService: TransactionRefreshService,
   ) {
   }
 
@@ -40,7 +43,7 @@ export class TransactionsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // later: refresh list or update state
+        this.transctionRefreshService.triggerRefresh();
       }
     });
   }
@@ -56,7 +59,22 @@ export class TransactionsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // later: update edited item
+        this.transctionRefreshService.triggerRefresh();
+      }
+    });
+  }
+
+  openDeleteDialog(transaction: TransactionResponse) {
+    const dialogRef = this.dialog.open(TransactionDeleteForm, {
+      width: '500px',
+      data: {
+        selectedTransaction: transaction
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.transctionRefreshService.triggerRefresh();
       }
     });
   }

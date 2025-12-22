@@ -1,6 +1,7 @@
 <app-transaction-list
   (addTransaction)="openAddDialog()"
-  (editTransaction)="openEditDialog($event)">
+  (editTransaction)="openEditDialog($event)"
+  (deleteTransaction)="openDeleteDialog($event)">
 </app-transaction-list>
 
 <button type="button" (click)="logout()">Logout</button>
