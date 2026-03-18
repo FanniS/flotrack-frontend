@@ -1,7 +1,14 @@
-<app-transaction-list
-  (addTransaction)="openAddDialog()"
-  (editTransaction)="openEditDialog($event)"
-  (deleteTransaction)="openDeleteDialog($event)">
-</app-transaction-list>
-
 <button type="button" (click)="logout()">Logout</button>
+<div class="page-container">
+  <div class="transaction-list-container">
+    <app-transaction-list
+      (addTransaction)="openAddDialog()"
+      (editTransaction)="openEditDialog($event)"
+      (deleteTransaction)="openDeleteDialog($event)">
+    </app-transaction-list>
+  </div>
+  <div class="transaction-summary-container">
+    <app-transaction-summary></app-transaction-summary>
+  </div>
+</div>
+

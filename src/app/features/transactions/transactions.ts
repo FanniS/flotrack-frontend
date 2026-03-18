@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../core/auth/services/auth';
 import { Router } from '@angular/router';
 import { TransactionList } from './transaction-list/transaction-list';
+import { TransactionSummary} from './transaction-summary/transaction-summary';
 import { TransactionForm } from "./transaction-form/transaction-form";
 import { FormsModule } from '@angular/forms';
 import { TransactionResponse } from '../../shared/models/transactions/transaction-response/transaction-response';
@@ -12,7 +13,7 @@ import { TransactionDeleteForm } from './transaction-delete-form/transaction-del
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [TransactionList, FormsModule],
+  imports: [TransactionList, TransactionSummary, FormsModule],
   templateUrl: './transactions.html',
   styleUrls: ['./transactions.css']
 })

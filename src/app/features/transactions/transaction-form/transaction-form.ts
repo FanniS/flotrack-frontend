@@ -4,7 +4,7 @@ import { CategoryService } from '../../../core/transaction/services/category-ser
 import { TransactionResponse } from '../../../shared/models/transactions/transaction-response/transaction-response';
 import { IncomeCategory } from '../../../shared/models/categories/income-category/income-category';
 import { ExpenseCategory } from '../../../shared/models/categories/expense-category/expense-category';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { TransactionService } from '../../../core/transaction/services/transaction-service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { CommonModule } from '@angular/common';
@@ -43,7 +43,8 @@ export class TransactionForm {
         Validators.required,
         Validators.min(0.01)
       ]),
-      date: new FormControl(new Date()),
+      //TODO: Add custom validator to prevent future dates
+      date: new FormControl(new Date(), [Validators.required]),
       description: new FormControl('')
     });
 
@@ -60,6 +61,10 @@ export class TransactionForm {
 
   get amountControl() {
     return this.transactionForm.get('amount');
+  }
+
+  get dateControl() {
+    return this.transactionForm.get('date');
   }
 
   ngOnInit() {
@@ -170,3 +175,12 @@ export class TransactionForm {
   }
 
 }
+
+/*export function futureDateValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const inputDate = new Date(control.value);
+    const today = new Date();
+
+    return inputDate.getTime() > today.getTime() ? { futureDate: true } : null;
+  };
+}*/

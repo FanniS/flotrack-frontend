@@ -1,10 +1,14 @@
 <div class="container">
-  <div class="header">
-    <h1>Transactions</h1>
-    <button (click)="onAddClick()">Add Transaction</button>
-    <button>Export to Excel</button>
-  </div>
   <section class="wrapper">
+    <div class="header">
+      <div class="header-text">
+        <h1>Transactions</h1>
+      </div>
+      <div class="header-buttons">
+        <button class="header-button" (click)="onAddClick()">Add Transaction</button>
+        <button class="header-button">Export to Excel</button>
+      </div>
+    </div>
     <!-- Row title -->
     <main class="row title">
       <ul>
@@ -24,7 +28,8 @@
         <li>{{ transaction.amount }} €</li>
         <li>{{ transaction.isExpense }}</li>
         <li>{{ transaction.date }}</li>
-        <li><button (click)="onEditClick(transaction)">Edit</button><button (click)="onDeleteClick(transaction)" class="delete-button">Delete</button></li>
+        <li><button (click)="onEditClick(transaction)">Edit</button><button (click)="onDeleteClick(transaction)"
+            class="delete-button">Delete</button></li>
       </ul>
       <ul class="more-content">
         <li>{{ transaction.description }}</li>

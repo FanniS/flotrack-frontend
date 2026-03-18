@@ -14,7 +14,7 @@
         <select id="category" formControlName="categoryId" required="true">
           <option *ngFor="let category of categoryOptions" [value]="category.id">{{ category.name }}</option>
         </select>
-        @if (transactionForm.get('categoryId')?.errors?.['required']) {
+        @if (transactionForm.get('categoryId')?.errors?.['required'] && transactionForm.get('categoryId')?.touched) {
         <small class="error-message">Category is required.</small>
         }
       </div>
@@ -43,14 +43,15 @@
     <div class="form-group">
       <label for="description">Description:</label>
       <textarea id="description" formControlName="description"></textarea>
+
+      @if (transactionError) {
+      <div class="error-message">{{ transactionError }}</div>
+      }
     </div>
 
     <div class="button-group">
       <button type="button" id="cancel-button" (click)="cancel()">Cancel</button>
       <button type="submit">{{ isEdit ? 'Update' : 'Add' }} Transaction</button>
-      @if (transactionError) {
-      <div class="error-message">{{ transactionError }}</div>
-      }
     </div>
 
   </form>

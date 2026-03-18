@@ -159,8 +159,47 @@ button {
   transition: background-color 0.3s ease;
 }
 
+button:hover {
+  background-color: #134fa8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #a3d387;
+  color: white;
+}
+
+.header-buttons {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+}
+
+.header-button {
+  background-color: #85bb65;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.header-button:hover {
+  background-color: #497132;
+}
+
 .delete-button {
   background-color: #497132;
+}
+
+.delete-button:hover {
+  background-color: #791313;
 }
 
 

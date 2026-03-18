@@ -1,0 +1,22 @@
+.page-container {
+  display: flex;
+  flex-direction: row;
+  width: 97%;
+  gap: 20px;
+  padding: 20px;
+}
+
+.transaction-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 70%;
+}
+
+.transaction-summary-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  width: 30%;
+  height: fit-content;
+}
