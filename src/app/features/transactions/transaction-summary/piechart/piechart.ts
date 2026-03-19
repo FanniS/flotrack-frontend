@@ -15,8 +15,8 @@ export class Piechart {
   pieChartType: ChartType = 'pie';
   currentIsExpense: boolean = true;
   piechartForm: FormGroup;
-  mapOfCategoriesAndAmounts: Map<string, number> = new Map<string, number>();
-  mapOfCategoriesAndAmountsPercentage: Map<string, number> = new Map<string, number>();
+  mapOfCategoriesAndAmountsExpense: Map<string, number> = new Map<string, number>();
+  mapOfCategoriesAndAmountsIncome: Map<string, number> = new Map<string, number>();
   pieChartData: ChartData<'pie', number[], string | string[]> = {
     labels: [],
     datasets: [
@@ -30,15 +30,15 @@ export class Piechart {
     private piechartService: PiechartService,
     private transactionRefreshService: TransactionRefreshService
   ) {
-    this.piechartForm = new FormGroup({ currentIsExpense: new FormControl(true) }),
-    this.getDataForPieChart(this.currentIsExpense)
+    this.piechartForm = new FormGroup({ currentIsExpense: new FormControl(true) })
   };
 
   get isExpenseControl() {
     return this.piechartForm.get('currentIsExpense');
   }
   ngOnInit() {
-    this.getDataForPieChart(this.currentIsExpense);
+    this.getDataForPieChart(true);
+    this.getDataForPieChart(false);
 
     this.piechartForm.get('currentIsExpense')?.valueChanges.subscribe(value => {
       this.updatePieChart(value);
@@ -52,15 +52,12 @@ export class Piechart {
   getDataForPieChart(currentIsExpense: boolean) {
     this.piechartService.getTransactionsByIsExpenseAndSumAmountByCategory(currentIsExpense).subscribe({
       next: data => {
-        this.mapOfCategoriesAndAmounts = new Map<string, number>(Object.entries(data));
-        this.pieChartData = {
-      labels: Array.from(this.mapOfCategoriesAndAmounts.keys()),
-      datasets: [
-        {
-          data: Array.from(this.mapOfCategoriesAndAmounts.values()),
+        if (currentIsExpense) {
+          this.mapOfCategoriesAndAmountsExpense = new Map<string, number>(Object.entries(data));
+        } else {
+          this.mapOfCategoriesAndAmountsIncome = new Map<string, number>(Object.entries(data));
         }
-      ]
-    };
+        this.updatePieChart(this.currentIsExpense);
       },
       error: err => {
         console.error('Error fetching data for pie chart:', err);
@@ -69,7 +66,26 @@ export class Piechart {
   }
 
   updatePieChart(isExpense: boolean) {
-    this.getDataForPieChart(isExpense);
+    if (isExpense) {
+      this.pieChartData = {
+        labels: Array.from(this.mapOfCategoriesAndAmountsExpense.keys()),
+        datasets: [
+          {
+            data: Array.from(this.mapOfCategoriesAndAmountsExpense.values()),
+          }
+        ]
+      };
+    }
+    else {
+      this.pieChartData = {
+        labels: Array.from(this.mapOfCategoriesAndAmountsIncome.keys()),
+        datasets: [
+          {
+            data: Array.from(this.mapOfCategoriesAndAmountsIncome.values()),
+          }
+        ]
+      };
+    }
   }
 
 }
