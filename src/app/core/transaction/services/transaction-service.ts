@@ -5,8 +5,6 @@ import { Observable } from "rxjs/internal/Observable";
 import { TransactionRequest } from "../../../shared/models/transactions/transaction-request/transaction-request";
 import { environment } from '../../../../environments/environment';
 import { PageResponse } from "../../../shared/models/transactions/page-response/page-response";
-import { IncomeCategory } from "../../../shared/models/categories/income-category/income-category";
-import { ExpenseCategory } from "../../../shared/models/categories/expense-category/expense-category";
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {

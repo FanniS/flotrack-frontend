@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { jwtInterceptor } from './core/auth/jwt-interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes), provideClientHydration(withEventReplay())
+    provideRouter(routes), provideClientHydration(withEventReplay()), provideCharts(withDefaultRegisterables()), provideCharts(withDefaultRegisterables()),
+    provideCharts(withDefaultRegisterables())
   ]
 };

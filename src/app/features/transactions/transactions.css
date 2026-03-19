@@ -9,14 +9,14 @@
 .transaction-list-container {
   display: flex;
   flex-direction: column;
+  align-self: flex-end;
   gap: 20px;
-  width: 70%;
+  width: 60%;
 }
 
 .transaction-summary-container {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  width: 30%;
-  height: fit-content;
+  display: flex;
+  align-self: start;
+  flex-direction: column;
+  width: 40%;
 }

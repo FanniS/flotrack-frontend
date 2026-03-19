@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, Output } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { TransactionResponse } from '../../../shared/models/transactions/transaction-response/transaction-response';
 import { TransactionService } from '../../../core/transaction/services/transaction-service';
 import { MatPaginatorModule } from '@angular/material/paginator';
