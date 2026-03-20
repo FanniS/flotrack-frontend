@@ -14,7 +14,6 @@
       <ul>
         <li>Category</li>
         <li>Amount</li>
-        <li>Expense</li>
         <li>Date</li>
         <li>Actions</li>
       </ul>
@@ -26,7 +25,6 @@
       <ul>
         <li>{{ transaction.categoryName }}</li>
         <li>{{ transaction.amount }} €</li>
-        <li>{{ transaction.isExpense }}</li>
         <li>{{ transaction.date }}</li>
         <li><button (click)="onEditClick(transaction)">Edit</button><button (click)="onDeleteClick(transaction)"
             class="delete-button">Delete</button></li>

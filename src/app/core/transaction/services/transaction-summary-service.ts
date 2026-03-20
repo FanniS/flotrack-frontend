@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "../../../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
-export class PiechartService {
+export class TransactionSummaryService {
   constructor(private http: HttpClient) { }
 
   httpOptions = {
@@ -17,6 +17,13 @@ export class PiechartService {
   getTransactionsByIsExpenseAndSumAmountByCategory(isExpense: boolean) {
     return this.http.get(
       environment.apiUrl + '/transactions/summary/amount/isExpense=' + isExpense,
+      this.httpOptions
+    )
+  }
+
+  getBalance() {
+    return this.http.get<number>(
+      environment.apiUrl + '/transactions/summary/balance',
       this.httpOptions
     )
   }

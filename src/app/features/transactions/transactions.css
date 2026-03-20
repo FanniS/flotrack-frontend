@@ -9,14 +9,12 @@
 .transaction-list-container {
   display: flex;
   flex-direction: column;
-  align-self: flex-end;
   gap: 20px;
   width: 60%;
 }
 
 .transaction-summary-container {
   display: flex;
-  align-self: start;
   flex-direction: column;
   width: 40%;
 }

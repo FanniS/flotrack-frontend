@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { PiechartService } from '../../../../core/transaction/services/piechart-service';
+import { TransactionSummaryService } from '../../../../core/transaction/services/transaction-summary-service';
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { TransactionRefreshService } from '../../../../core/transaction/services/transaction-refresh';
 
@@ -13,7 +13,6 @@ import { TransactionRefreshService } from '../../../../core/transaction/services
 })
 export class Piechart {
   pieChartType: ChartType = 'pie';
-  currentIsExpense: boolean = true;
   piechartForm: FormGroup;
   mapOfCategoriesAndAmountsExpense: Map<string, number> = new Map<string, number>();
   mapOfCategoriesAndAmountsIncome: Map<string, number> = new Map<string, number>();
@@ -27,46 +26,53 @@ export class Piechart {
   };
 
   constructor(
-    private piechartService: PiechartService,
-    private transactionRefreshService: TransactionRefreshService
+    private transactionSummaryService: TransactionSummaryService,
+    private transactionRefreshService: TransactionRefreshService,
   ) {
     this.piechartForm = new FormGroup({ currentIsExpense: new FormControl(true) })
   };
 
-  get isExpenseControl() {
+  get currentIsExpenseControl() {
     return this.piechartForm.get('currentIsExpense');
   }
+
   ngOnInit() {
-    this.getDataForPieChart(true);
-    this.getDataForPieChart(false);
+    this.getDataForPieChart();
 
     this.piechartForm.get('currentIsExpense')?.valueChanges.subscribe(value => {
-      this.updatePieChart(value);
+      this.updatePieChart();
     });
 
     this.transactionRefreshService.refresh$.subscribe(() => {
-      this.getDataForPieChart(this.currentIsExpense);
+      this.getDataForPieChart();
     });
   }
 
-  getDataForPieChart(currentIsExpense: boolean) {
-    this.piechartService.getTransactionsByIsExpenseAndSumAmountByCategory(currentIsExpense).subscribe({
+  getDataForPieChart() {
+    this.transactionSummaryService.getTransactionsByIsExpenseAndSumAmountByCategory(true).subscribe({
       next: data => {
-        if (currentIsExpense) {
-          this.mapOfCategoriesAndAmountsExpense = new Map<string, number>(Object.entries(data));
-        } else {
-          this.mapOfCategoriesAndAmountsIncome = new Map<string, number>(Object.entries(data));
-        }
-        this.updatePieChart(this.currentIsExpense);
+        this.mapOfCategoriesAndAmountsExpense = new Map<string, number>(Object.entries(data));
+        this.updatePieChart();
       },
       error: err => {
         console.error('Error fetching data for pie chart:', err);
       }
     });
+
+    this.transactionSummaryService.getTransactionsByIsExpenseAndSumAmountByCategory(false).subscribe({
+      next: data => {
+        this.mapOfCategoriesAndAmountsIncome = new Map<string, number>(Object.entries(data));
+        this.updatePieChart();
+      },
+      error: err => {
+        console.error('Error fetching data for pie chart:', err);
+      }
+    });
+
   }
 
-  updatePieChart(isExpense: boolean) {
-    if (isExpense) {
+  updatePieChart() {
+    if (this.currentIsExpenseControl?.value) {
       this.pieChartData = {
         labels: Array.from(this.mapOfCategoriesAndAmountsExpense.keys()),
         datasets: [

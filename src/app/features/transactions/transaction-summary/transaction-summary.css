@@ -19,6 +19,19 @@ body {
   border-color: #85bb65;
 }
 
+.balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.amount {
+  color: #497132;
+  font-size: 3.5rem;
+}
+
 app-piechart {
   width: 100%;
 }
+
